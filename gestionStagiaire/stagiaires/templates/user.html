@@ -1,0 +1,183 @@
+{% load static %}
+
+<nav class="navbar navbar-expand-sm navbar-dark ">
+    <div class="container-fluid">
+        <!-- <ul class="nav nav-pills">
+        
+            <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#">Type</a>
+                  <ul class="dropdown-menu">
+                    <li><a class="link dropdown-item" href="#" data-url="{% url 'user' %}">Tout</a></li>
+                    <li><a class="link dropdown-item" href="#" data-url="{% url 'user_admin' %}">Admin</a></li>
+                    <li><a class="link dropdown-item" href="#" data-url="{% url 'user_membre' %}">Membre</a></li>
+                  </ul>
+            </li>
+                
+        </ul> -->
+        <!-- Dropdown avec la balise select de Bootstrap -->
+        <div class="dropdown">
+            <select class="custom-select" id="dropdownMenuButton">
+            <option selected>Type</option>
+            <option value="0">Tout</option>
+            <option value="1">Admin</option>
+            <option value="2">Membre</option>
+      
+            </select>
+        </div>
+
+
+
+
+        <form class="d-flex" id="search-form">
+            {% csrf_token %}
+            <input class="form-control me-2" type="text" id="param-input" placeholder="Rechercher" name="param" required>
+            <a id="rechercher-link" href="#" data-url="{% url 'user_search' %}" style="position: relative;right: 40px;top:4px">
+                <img src="{% static 'images/icon_search.png' %}">
+            </a>
+        </form>
+
+    </div>
+   
+ 
+
+</nav>
+
+<div class="table-responsive table-with-scroll">
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-success alert-dismissible mt-3">
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        {{ message }}
+    </div>
+    {% endfor %}
+    {% endif %}
+    <table class="table table-hover table-rounded">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Statut</th>
+                {% if is_superuser %}
+                <th>Action</th>
+                {% endif %}
+            </tr>
+        </thead>
+        {% for x in users %}
+        <tbody>
+            <tr>
+                    <td>{{ x.id }}</td>
+                    <td>{{ x.username }}</td>
+                    <td>{{ x.email }}</td>
+                    {% if x.is_superuser == 1 %}
+                    <td>Admin</td>
+                    {% else  %}
+                    <td>Membre</td>
+                    {% endif %}
+                    {% if is_superuser %}
+
+                    <td>
+                        <a class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#myModalDelete{{ x.id }}">
+                            Supprimer 
+                        </a>
+                    
+                        <!-- The Modal -->
+                        
+                        <div class="modal fade" id="myModalDelete{{ x.id }}">
+                            <div class="modal-dialog">
+                            <div class="modal-content">
+                        
+                                <!-- Modal Header -->
+                                <div class="modal-header">
+                                <h4 class="modal-title">Avertissement!</h4>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                        
+                                <!-- Modal body -->
+                                <div class="modal-body">
+                                    Êtes-vous sûre de vouloir supprimer le compte {{ x.username }} ?ça va supprimer aussi toutes les demandes relatives à ce compte ainsi que les encadreurs ajoutés
+                                </div>
+                        
+                                <!-- Modal footer -->
+                                <div class="modal-footer">
+                                <a href="#" class="link btn btn-danger" data-url="{% url 'delete_user' x.id %}" data-bs-dismiss="modal"><span>Oui</span></a>
+                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Non</button>
+                                </div>
+                        
+                            </div>
+                            </div>
+                        </div> 
+                    </td>
+                    
+                    {% endif %}
+                
+            
+            </tr>
+        </tbody>
+        {% endfor %}
+    </table>
+
+</div>
+<script>
+        // Fonction pour charger le contenu via AJAX
+        function loadContent(url) {
+            $.ajax({
+            url: url,
+            method: 'GET',
+            dataType: 'html',
+            success: function(data) {
+                $("#content-container").html(data);
+            },
+            error: function(error) {
+                alert("erreur");
+                console.log("Erreur : " + error);
+            }
+            });
+        }
+
+
+
+        $(".link").click(function(e) {
+            e.preventDefault(); // Empêchez le lien de changer de page
+    
+            // Obtenez l'URL de la vue à charger depuis l'attribut data
+            var viewUrl = $(this).data("url") + "?type={{ type }}";
+            // Chargez le contenu de la vue en utilisant AJAX
+            loadContent(viewUrl);
+   
+        });
+
+        $("#dropdownMenuButton").change(function(e) {
+            // Récupérer la valeur sélectionnée
+            var selectedValue = this.value;
+
+            // Rediriger vers l'URL spécifiée en fonction de la valeur sélectionnée
+            switch (selectedValue) {
+                case '0':
+                loadContent("{% url 'user' %}" + "?type={{ type }}");
+                break;
+                case '1':
+                loadContent("{% url 'user_admin' %}" + "?type={{ type }}");
+                break;
+                case '2':
+                loadContent("{% url 'user_membre' %}" + "?type={{ type }}");
+                break;
+                default:
+                // Redirection par défaut ou ne rien faire
+                break;
+            }
+        })
+
+        $("#rechercher-link").click(function(e) {
+            e.preventDefault(); // Empêchez le lien de changer de page
+
+            // Récupérez la valeur de l'input
+            var paramValue = $("#param-input").val();
+
+            // Obtenez l'URL de la vue à charger depuis l'attribut data
+            var viewUrl = $(this).data("url") + "?param=" + paramValue + "&type={{ type }}"; // Ajoutez le paramètre à l'URL
+
+            // Chargez le contenu de la vue en utilisant AJAX
+            loadContent(viewUrl);
+        });
+</script>

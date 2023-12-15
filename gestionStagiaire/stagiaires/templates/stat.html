@@ -1,0 +1,134 @@
+<section class="py-3 py-md-5">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-12 col-sm-10 col-md-7 col-lg-6 col-xl-5 col-xxl-4">
+          <div class="card widget-card border-light shadow-sm bg-dark">
+            <div class="card-body p-4">
+              <div class="row align-items-center justify-content-center">
+                <div class="col-6">
+                  <h5 class="card-title widget-card-title text-white mb-1">Statistique</h5>
+                  <p class="mb-0 fs-7 text-white">Total : {{ total }}</p>
+                </div>
+                <div class="col-6 d-flex align-items-center justify-content-end">
+                  <span class="fs-1 bsb-w-85 bsb-h-85 text-white border border-3 border-primary-subtle rounded-circle d-flex align-items-center justify-content-center">
+                    <i class="bi bi-people"></i>
+                  </span>
+                </div>
+              </div>
+              <div class="card mt-5 border-0">
+                <div class="card-body">
+                  <div class="row gy-4">
+                    <div class="col-12">
+                      <div class="card bg-primary-subtle text-primary border-0">
+                        <div class="card-body">
+                          <div class="row align-items-center">
+                            <div class="col-8">
+                              <div class="d-flex align-items-center">
+                                <span class="fs-6 bsb-w-35 bsb-h-35 text-bg-primary rounded-circle d-flex align-items-center justify-content-center me-2">
+                                  <i class="bi bi-twitter-x"></i>
+                                </span>
+                                <div>
+                                  <h6 class="m-0">Stage en attente</h6>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="col-4">
+                              <h6 class="h3 text-end m-0">{{ nombre_stages_attente }}</h6>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-12">
+                      <div class="card bg-success-subtle text-success border-0">
+                        <div class="card-body">
+                          <div class="row align-items-center">
+                            <div class="col-8">
+                              <div class="d-flex align-items-center">
+                                <span class="fs-6 bsb-w-35 bsb-h-35 text-bg-success rounded-circle d-flex align-items-center justify-content-center me-2">
+                                  <i class="bi bi-facebook"></i>
+                                </span>
+                                <div>
+                                  <h6 class="m-0">Stage accepté</h6>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="col-4">
+                              <h6 class="h3 text-end m-0">{{ nombre_stages_accepte }}</h6>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-12">
+                      <div class="card bg-danger-subtle text-danger border-0">
+                        <div class="card-body">
+                          <div class="row align-items-center">
+                            <div class="col-8">
+                              <div class="d-flex align-items-center">
+                                <span class="fs-6 bsb-w-35 bsb-h-35 text-bg-danger rounded-circle d-flex align-items-center justify-content-center me-2">
+                                  <i class="bi bi-github"></i>
+                                </span>
+                                <div>
+                                  <h6 class="m-0">Stage refusé</h6>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="col-4">
+                              <h6 class="h3 text-end m-0">{{ nombre_stages_refuse }}</h6>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-12">
+                      <div class="card bg-info-subtle text-info border-0">
+                        <div class="card-body">
+                          <div class="row align-items-center">
+                            <div class="col-8">
+                              <div class="d-flex align-items-center">
+                                <span class="fs-6 bsb-w-35 bsb-h-35 text-bg-info rounded-circle d-flex align-items-center justify-content-center me-2">
+                                  <i class="bi bi-youtube"></i>
+                                </span>
+                                <div>
+                                  <h6 class="m-0">Stage terminé</h6>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="col-4">
+                              <h6 class="h3 text-end m-0">{{ nombre_stages_termine }}</h6>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-12">
+                      <div class="card bg-warning-subtle text-warning border-0">
+                        <div class="card-body">
+                          <div class="row align-items-center">
+                            <div class="col-8">
+                              <div class="d-flex align-items-center">
+                                <span class="fs-6 bsb-w-35 bsb-h-35 text-bg-warning rounded-circle d-flex align-items-center justify-content-center me-2">
+                                  <i class="bi bi-dribbble"></i>
+                                </span>
+                                <div>
+                                  <h6 class="m-0">Stage expiré</h6>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="col-4">
+                              <h6 class="h3 text-end m-0">{{ nombre_stages_expire }}</h6>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>

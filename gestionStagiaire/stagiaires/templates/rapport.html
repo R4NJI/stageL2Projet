@@ -1,0 +1,287 @@
+{% load static %}
+<nav class="navbar navbar-expand-sm navbar-dark ">
+    <div class="container-fluid">
+        <ul class="nav nav-pills">
+        
+        <!-- <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#">Rapport</a>
+              <ul class="dropdown-menu">
+                <li><a class="link dropdown-item" href="#" data-url="{% url 'rapport' %}">Tout</a></li>
+                <li><a class="link dropdown-item" href="#" data-url="{% url 'rapportAttente' %}">En attente</a></li>
+                <li><a class="link dropdown-item" href="#" data-url="{% url 'rapportValide' %}">Validé</a></li>
+                <li><a class="link dropdown-item" href="#" data-url="{% url 'rapportRefuse' %}">Refusé</a></li>
+              </ul>
+            </li> -->
+
+        <!-- Dropdown avec la balise select de Bootstrap -->
+        <div class="dropdown">
+            <select class="custom-select" id="dropdownMenuButton">
+            <option selected>Rapport</option>
+            <option value="0">Tout</option>
+            <option value="1">En attente</option>
+            <option value="2">Validé</option>
+            <option value="3">Refusé</option>
+            </select>
+        </div>
+            
+        </ul>
+
+
+        <form class="d-flex" id="search-form">
+            {% csrf_token %}
+            <input class="form-control me-2" type="text" id="param-input" placeholder="Rechercher" name="param" required>
+            <a id="rechercher-link" href="#" data-url="{% url 'rapport_search' %}" style="position: relative;right: 40px;top:4px">
+                <img src="{% static 'images/icon_search.png' %}">
+            </a>
+        </form>
+
+    </div>
+   
+ 
+
+</nav>
+
+<div class="table-responsive table-with-scroll">
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-success alert-dismissible mt-3">
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        {{ message }}
+    </div>
+    {% endfor %}
+    {% endif %}
+    <table class="table table-hover table-rounded">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Stage N°</th>
+                <th>Matricule</th>
+                <th>Nom</th>
+                <th>Prénom</th>
+                <th>Thème</th>
+                <th>Rapport de stage</th>
+                {% if type == "Validé" %}
+                <th>Grille d'évaluation</th>
+                {% else %}
+                <th>Appréciation</th>
+                {% endif %}
+                <th>Statut de rapport</th>
+                {% if is_superuser and type == "En attente" or type == "Tout" %}
+                    <th colspan="2" style="text-align: center;">Action</th>
+                {% else %}
+                    <th>Action</th>
+                {% endif %}
+            
+            </tr>
+        </thead>
+        {% for x in demandes %}
+        <tbody>
+            <tr>
+                  
+                    <td>{{ x.etudiant.idEtudiant }}</td>
+                    <td>{{ x.etudiant.stage.idStage }}</td>
+                    <td>{{ x.etudiant.matricule }}</td>
+                    <td>{{ x.etudiant.nomEtudiant }}</td>
+                    <td>{{ x.etudiant.prenomEtudiant }}</td>
+                    <td>{{ x.etudiant.stage.theme }}</td>
+                    <td>
+                        {% if x.etudiant.rapport.rapportStage %} 
+                        <a href="{% url 'download_rapport' x.etudiant.idEtudiant 'rapportStage' %}"><img src="{% static 'images/icondownload.png' %}"></a>
+                        {% else %}
+                            <img src="{% static 'images/iconempty.png' %}">
+                        {% endif %}
+                    </td>
+                    {% if type == "Validé" %}
+                    <td>
+                        <a href="#" data-url="{% url 'grilleEval2' x.etudiant.idEtudiant %}" class="link"><img src="{% static 'images/icondownload.png' %}"></a>
+                    </td>
+                    {% else %}
+                    <td>
+                        {% if x.etudiant.rapport.appreciation %} 
+                        <a href="{% url 'download_rapport' x.etudiant.idEtudiant 'appreciation' %}"><img src="{% static 'images/icondownload.png' %}"></a>
+                        {% else %}
+                        <img src="{% static 'images/iconempty.png' %}">
+                        {% endif %}
+                    </td>
+                    {% endif %}
+                    <td>
+                    {% if x.etudiant.rapport.statutRapport %}
+                        {{ x.etudiant.rapport.statutRapport }}
+                    {% else %}
+                    <img src="{% static 'images/iconempty.png' %}">
+                    {%  endif %}
+                    </td>
+                    {% if is_superuser %}
+                        {% if type == "En attente" or type == "Tout" %}
+                            {% if x.etudiant.rapport.statutRapport == "En attente" %}
+                                {% if user_id and x.etudiant.personnel.user.id == user_id  %}    
+                                    <td>
+                                        <a href="#" data-url="{% url 'grilleEval' x.etudiant.idEtudiant %}" class="link btn btn-primary">Valider</a>
+                                        
+                                    </td>
+
+                                    <td>
+                                        <a class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#myModalAppre{{ x.etudiant.idEtudiant}}">Refuser</a>
+                                        <!-- The Modal -->
+                                        
+                                    <div class="modal fade" id="myModalAppre{{ x.etudiant.idEtudiant }}">
+                                        <div class="modal-dialog">
+                                        <div class="modal-content">
+                                    
+                                            <!-- Modal Header -->
+                                            <div class="modal-header">
+                                            <h4 class="modal-title">Envoie du rapport de stage</h4>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                            </div>
+                                    
+                                            <form action="{% url 'ajouter_appreciation' x.etudiant.idEtudiant %}"  method="post" enctype="multipart/form-data">
+                                                <!-- Modal body -->
+                                                <div class="modal-body">
+                                                        {% csrf_token %}
+                                                        <input type="file" class="form-control" id="appreciation" name="appreciation" required>
+                                
+                                                </div>
+                                        
+                                                <!-- Modal footer -->
+                                                <div class="modal-footer">
+                                                    <button type="submit" class="btn btn-primary">Soumettre</button>
+                                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Annuler</button>
+                                                </div>
+                                            </form>
+                                    
+                                        </div>
+                                        </div>
+                                    </div>
+                                    </td>
+                                {% else %}
+                                <td colspan="2" style="text-align: center;"><img src="{% static 'images/iconunavailable.png' %}"></td>
+                                {% endif %}
+
+
+                            {% elif x.etudiant.rapport.statutRapport == "Validé" %}
+                                <td colspan="2" style="text-align: center;"><a href="#" class="link btn btn-danger" data-url="{% url 'delete_rapport' x.etudiant.idEtudiant %}">Supprimer</a></td>
+                            {% else %}
+                                <td colspan="2" style="text-align: center;"><img src="{% static 'images/iconunavailable.png' %}"></td>
+                            {% endif %}
+                        {% else %}
+                        <td><a href="#" class="link btn btn-danger" data-url="{% url 'delete_rapport' x.etudiant.idEtudiant %}">Supprimer</a></td>
+                        {% endif %}
+                    {% else %}
+                    {% if user_id and user_id == user.id %}
+                        {% if x.etudiant.rapport.statutRapport != "Validé" %}
+                        <td>
+                            <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModalrapport{{ x.etudiant.idEtudiant}}">Envoyer</a>
+                            <!-- The Modal -->
+                                    
+                            <div class="modal fade" id="myModalrapport{{ x.etudiant.idEtudiant }}">
+                                <div class="modal-dialog">
+                                <div class="modal-content">
+                            
+                                    <!-- Modal Header -->
+                                    <div class="modal-header">
+                                    <h4 class="modal-title">Envoie du rapport de stage</h4>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+                            
+                                    <form action="{% url 'ajouter_rapport' x.etudiant.idEtudiant %}"  method="post" enctype="multipart/form-data">
+                                        <!-- Modal body -->
+                                        <div class="modal-body">
+                                                {% csrf_token %}
+                                                <input type="file" class="form-control" id="rapportStage" name="rapportStage" required>
+                        
+                                        </div>
+                                
+                                        <!-- Modal footer -->
+                                        <div class="modal-footer">
+                                            <button type="submit" class="btn btn-primary">Soumettre</button>
+                                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Annuler</button>
+                                        </div>
+                                    </form>
+                            
+                                </div>
+                                </div>
+                            </div>
+                        </td>
+                        {% else %}
+                        <td><img src="{% static 'images/iconunavailable.png' %}"></td>
+                        {% endif %}
+                    {% else %}
+                    <td><img src="{% static 'images/iconunavailable.png' %}"></td>
+                    {% endif %}
+                
+                    {% endif %}
+            
+            </tr>
+        </tbody>
+        {% endfor %}
+    </table>
+
+</div>
+<script>
+        // Fonction pour charger le contenu via AJAX
+        function loadContent(url) {
+            $.ajax({
+            url: url,
+            method: 'GET',
+            dataType: 'html',
+            success: function(data) {
+                $("#content-container").html(data);
+            },
+            error: function(error) {
+                alert("erreur");
+                console.log("Erreur : " + error);
+            }
+            });
+        }
+
+
+
+         $(".link").click(function(e) {
+            e.preventDefault(); // Empêchez le lien de changer de page
+    
+            // Obtenez l'URL de la vue à charger depuis l'attribut data
+            var viewUrl = $(this).data("url") + "?type={{ type }}";
+            // Chargez le contenu de la vue en utilisant AJAX
+            loadContent(viewUrl);   
+        });
+
+        $("#dropdownMenuButton").change(function(e) {
+            // Récupérer la valeur sélectionnée
+            var selectedValue = this.value;
+
+            // Rediriger vers l'URL spécifiée en fonction de la valeur sélectionnée
+            switch (selectedValue) {
+                case '0':
+                loadContent("{% url 'rapport' %}");
+                break;
+                case '1':
+                loadContent("{% url 'rapportAttente' %}");
+                break;
+                case '2':
+                loadContent("{% url 'rapportValide' %}");
+                break;
+                case '3':
+                loadContent("{% url 'rapportRefuse' %}");
+                break;
+                default:
+                // Redirection par défaut ou ne rien faire
+                break;
+            }
+        })
+
+        $("#rechercher-link").click(function(e) {
+            e.preventDefault(); // Empêchez le lien de changer de page
+
+            // Récupérez la valeur de l'input
+            var paramValue = $("#param-input").val();
+
+            // Obtenez l'URL de la vue à charger depuis l'attribut data
+            var viewUrl = $(this).data("url") + "?param=" + paramValue + "&type={{ type }}"; // Ajoutez le paramètre à l'URL
+
+            // Chargez le contenu de la vue en utilisant AJAX
+            loadContent(viewUrl);
+        });
+
+
+
+</script>

@@ -1,0 +1,32 @@
+<h1>Ajouter un nouveau stagiaire</h1>
+
+<form action="addrecord/" method="post">
+{% csrf_token %}
+Matricule:<br>
+<input name="matricule">
+<br><br>
+IdStage:<br>
+<input name="idstage">
+<br><br>
+Nom:<br>
+<input name="nom">
+<br><br>
+Prénom:<br>
+<input name="prenom">
+<br><br>
+Adresse:<br>
+<input name="adresse">
+<br><br>
+Ecole:<br>
+<input name="ecole">
+<br><br>
+Filière:<br>
+<input name="filiere">
+<br><br>
+Email:<br>
+<input name="email">
+<br><br>
+<input type="submit" value="Submit">
+</form>
+
+<a href="../">Retour à l'index</a>

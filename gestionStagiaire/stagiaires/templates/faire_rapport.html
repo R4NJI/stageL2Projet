@@ -1,0 +1,64 @@
+<div class="table-with-scroll" >
+    <div class="container">    
+        <div class="row justify-content-center">
+            <div class="col-6">
+                {% if messages %}
+                    {% for message in messages %}
+                    <div class="alert alert-success alert-dismissible mt-3">
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                {% endif %}
+                <a href="#" class="link" data-url="{% url 'rapport' %}">Retour</a>
+                <form action="{% if is_superuser %} {% url 'ajouter_appreciation' %} {% else %} {% url 'ajouter_rapport' %} {% endif %}" method="post" id="rapport-form" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <h1>Faire un rapport de stage</h1>
+                   
+                        <div class="mb-3 mt-3">
+                        <label for="idEtudiant">Identifiant:</label>
+                        <input type="number" min="1" class="form-control" id="idEtudiant" placeholder="Entrer l'identifiant" name="idEtudiant" required>
+                        </div>
+                        
+                        {% if is_superuser %}
+                        <div class="mb-3">
+                            <label for="appreciation">Appréciation:</label>
+                            <input type="file" class="form-control" id="appreciation" name="appreciation" required>
+                        </div>
+                        {% else %}
+                        <div class="mb-3">
+                            <label for="rapportStage">Rapport de stage:</label>
+                            <input type="file" class="form-control" id="cv" name="rapportStage" required>
+                        </div>
+                        {% endif %}
+
+                        <button type="submit" class="btn btn-primary">Envoyer</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+        $(".link").click(function(e) {
+                e.preventDefault(); // Empêchez le lien de changer de page
+        
+                // Obtenez l'URL de la vue à charger depuis l'attribut data
+                var viewUrl = $(this).data("url");
+                // Chargez le contenu de la vue en utilisant AJAX
+
+                $.ajax({
+                    url: viewUrl,
+                    method: 'GET',
+                    dataType: 'html',
+                    success: function(data) {
+                        $("#content-container").html(data);
+                    },
+                    error: function(error) {
+                        alert("erreur")
+                        console.log("Erreur : " + error);
+                    }
+                });
+                
+        });
+
+</script>

@@ -1,0 +1,64 @@
+
+<div class="table-responsive table-with-scroll">
+    <h1>Stagiaire</h1>
+    
+
+    <nav class="navbar navbar-expand-sm navbar-dark ">
+  
+        <form class="d-flex">
+          <input class="form-control me-2" type="text" placeholder="Rechercher">
+          <button class="btn btn-primary" type="button">Rechercher</button>
+        </form>
+     
+    
+    </nav>
+    <table class="table table-hover">
+        <tr>
+            <th>ID</th>
+            <th>Stage N°</th>
+            <th>Matricule</th>
+            <th>Nom</th>
+            <th>Prénom</th>
+            <th>Adresse</th>
+            <th>Ecole</th>
+            <th>CV</th>
+            <th>Lettre de motivation</th>
+            <th>Autre fichier</th>
+            <th>Domaine</th>
+            <th>Thème</th>
+            <th>Date du début</th>
+            <th>Date de fin</th>
+            <th>Email</th>
+            <th>Statut</th>
+        </tr>
+        {% for x in demandes %}
+            <tr>
+                <td>{{ x.etudiant.idEtudiant }}</td>
+                <td>{{ x.etudiant.stage.idStage }}</td>
+                <td>{{ x.etudiant.matricule }}</td>
+                <td>{{ x.etudiant.nomEtudiant }}</td>
+                <td>{{ x.etudiant.prenomEtudiant }}</td>
+                <td>{{ x.etudiant.adresseEtudiant }}</td>
+                <td>{{ x.etudiant.ecole }}</td>
+                <td>
+                    <a href="{% url 'download_file' x.numeroDemande 'cv' %}" class="btn btn-success">Télécharger</a>
+                </td>
+                <td>
+                    <a href="{% url 'download_file' x.numeroDemande 'lettreMotiv' %}" class="btn btn-success">Télécharger</a>
+                </td>
+                <td>
+                    <a href="{% url 'download_file' x.numeroDemande 'autreFichier' %}" class="btn btn-success">Télécharger</a>
+                </td>
+                <td>{{ x.etudiant.stage.domaine }}</td>
+                <td>{{ x.etudiant.stage.theme }}</td>
+                <td>{{ x.etudiant.stage.dateDebut }}</td>
+                <td>{{ x.etudiant.stage.dateFin }}</td>
+                <td>{{ x.etudiant.emailEtudiant }}</td>
+                <td>{{ x.etudiant.stage.statut }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+
+</div>
+
+

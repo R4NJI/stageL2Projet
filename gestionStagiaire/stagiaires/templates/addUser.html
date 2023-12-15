@@ -1,0 +1,29 @@
+{% extends "admin/login.html" %}
+
+{% block branding %}
+    <h1 style="color:white">
+        Inscription de l'utilisateur
+    </h1>
+{% endblock %}
+
+{% block footer %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          
+            var loginForm = document.getElementById('login-form'); // Remplacez 'login-form' par l'ID de votre formulaire
+
+            if (loginForm) {
+                // Modifiez l'attribut action du formulaire selon votre besoin
+                loginForm.action = "{% url 'custom_login' %}";
+
+            }
+
+            // Ciblez l'élément label par son attribut 'for' 
+            var label = document.querySelector('label[for="id_username"]');
+            if (label) {
+                label.textContent = 'Nom de l\'utilisateur';
+            }
+        });
+    </script>
+{% endblock %}
+

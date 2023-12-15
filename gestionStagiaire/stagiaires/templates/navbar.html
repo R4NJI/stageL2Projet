@@ -1,0 +1,281 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <title>Menu</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/all.min.css' %}">
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'js/jquery-3.7.1.js' %}"></script>
+    <script src="{% static 'js/chart.js' %}"></script>
+    <script src="{% static 'js/chartjs-plugin-datalabels.js' %}"></script>
+</head>
+    <style>
+        /* Ajoutez une classe pour la barre de défilement verticale spécifique au tableau */
+        .table-with-scroll {
+        max-height: 83vh; /* Ajustez la hauteur maximale comme vous le souhaitez */
+        overflow-y: auto;
+        }
+        .table-with-scroll2 {
+        max-height: 100vh; /* Ajustez la hauteur maximale comme vous le souhaitez */
+        overflow-y: auto;
+        }
+
+        body {
+        overflow: hidden;
+        }
+        .dropdown-menu.custom-bg {
+            background-color: transparent; /* Remplacez 'transparent' par la couleur de fond souhaitée */
+            text-align: right;
+            margin: 0;
+            border-color: transparent;
+        }
+        .dropdown-item.option:hover{
+            background-color: transparent;
+            opacity: 75%;
+            
+        }
+
+        .dropdown-item.option:active{
+            background-color: transparent;
+        }
+
+        .dropdown-item.option{
+            color:white;
+            opacity: 50%;
+            width: 90%;
+        }
+        td,th {
+            text-align: center;
+        }
+        th {
+            vertical-align: middle;
+        }
+        #link-logout {
+            text-decoration: none;
+        }
+        #content-container {
+            background-image: url("{% static 'images/bg-22.jpg' %}");
+        }
+
+        .table-rounded {
+    border-radius: 10px; /* Vous pouvez ajuster la valeur selon votre préférence */
+    overflow: hidden; /* Pour s'assurer que les coins arrondis sont visibles */
+        }
+
+
+
+    </style>
+<body>
+    <div class="container-fluid">
+        <div class="row" style="height:100vh">
+                <div class="col-sm-2 bg-dark" id="mydiv">
+                
+                    <nav class="navbar navbar-dark">
+                        <a class="navbar-brand" href="#">Menu</a>
+                        <button class="navbar-toggler d-block d-sm-none" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar" id="mybutton">
+                        <span class="navbar-toggler-icon"></span>
+                        </button>
+                        <!-- Links -->
+                        <div class="collapse navbar-collapse d-sm-block" id="collapsibleNavbar">
+                            <ul class="navbar-nav">
+                                
+                                <li class="nav-item">
+                                    {% if not load_demande and not load_rapport and not load_personnel %}
+                                    <a class="nav-link active" href="#" data-url="{%url 'statistique' %}">
+                                    {% else %}
+                                    <a class="nav-link" href="#" data-url="{%url 'statistique' %}">
+                                    {% endif %}
+                                        <img src="{% static 'images/iconstat.png' %}" class="menu-icon">
+                                        Statistique
+                                    </a>
+                                </li>
+                                {% if not is_superuser %}
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" data-url="{%url 'faire_demande' %}">   
+                                        <img src="{% static 'images/iconadd.png' %}" class="menu-icon">Faire une demande</a>
+                                    <ul class="dropdown-menu custom-bg text-white d-none mobi">
+                                        <li><a class="nav-link dropdown-item option m" data-url="{%url 'monome' %}" href="#">
+                                            <img src="{% static 'images/iconsolo.png' %}" class="menu-icon">
+                                            monome
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="nav-link dropdown-item option" href="#" data-url="{%url 'binome' %}">
+                                                <img src="{% static 'images/iconduo.png' %}" class="menu-icon">
+                                                binome
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                {% endif %}
+
+                                <li class="nav-item">
+                                    {% if load_demande and not load_rapport and not load_personnel %}
+                                    <a class="nav-link active" href="#" data-url="{%url 'demande' %}">
+                                    {% else %}
+                                    <a class="nav-link" href="#" data-url="{%url 'demande' %}">
+                                    {% endif %}
+                                        <img src="{% static 'images/iconimport.png' %}" class="menu-icon">
+                                        Demande
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#" data-url="{%url 'demande_acceptee' %}">
+                                        <img src="{% static 'images/iconmember.png' %}" class="menu-icon">
+                                        Demande acceptée
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#" data-url="{%url 'demande_refusee' %}">
+                                        <img src="{% static 'images/iconrefused.png' %}" class="menu-icon">
+                                        Demande refusée
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#" data-url="{%url 'stage_termine' %}">
+                                        <img src="{% static 'images/icon_checked.png' %}" class="menu-icon">
+                                        Stage terminé
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#" data-url="{%url 'stage_expire' %}">
+                                        <img src="{% static 'images/iconexpired.png' %}" class="menu-icon">
+                                        Stage expiré
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    {% if load_rapport and not load_demande and not load_personnel %}
+                                    <a class="nav-link active" href="#" data-url="{%url 'rapport' %}">
+                                    {% else %}
+                                    <a class="nav-link" href="#" data-url="{%url 'rapport' %}">
+                                    {% endif %}
+                                        <img src="{% static 'images/iconrapport.png' %}" class="menu-icon">
+                                        Rapport
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#" data-url="{%url 'user' %}">
+                                        <img src="{% static 'images/iconusers.png' %}" class="menu-icon">
+                                        Utilisateur
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    {% if load_personnel and not load_demande and not load_rapport %}
+                                    <a class="nav-link active" href="#" data-url="{%url 'personnel' %}">
+                                    {% else %}  
+                                    <a class="nav-link" href="#" data-url="{%url 'personnel' %}">
+                                    {% endif %}
+                                        <img src="{% static 'images/iconcadre.png' %}" class="menu-icon">
+                                        Encadreur
+                                    </a>
+                                </li>
+
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" data-url="{%url 'autre' %}">   
+                                        <img src="{% static 'images/iconuser.png' %}" class="menu-icon">  {{ username }}
+                                    </a>
+                                    <ul class="dropdown-menu custom-bg text-white">
+                                        <li id="logout-li" class="d-none">
+                                            <a id="logout-link" class="dropdown-item option" href="{%url 'logout' %}">
+                                                <img src="{% static 'images/iconlogout.png' %}" class="menu-icon">
+                                                Déconnexion
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </nav>
+                    
+                </div>
+
+
+                <div class="col-sm-10" id="content-container" >
+                    
+                </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            // Désactivez les autres gestionnaires d'événements "clic"
+
+            // Interceptez les clics sur les liens du menu
+            $(".nav-link").click(function(e) {
+                e.preventDefault(); // Empêchez le lien de changer de page
+            
+                // Supprimez la classe "active" de tous les liens du menu
+                $(".nav-link").removeClass("active");
+               
+                $(this).addClass("active");
+
+
+                // if (this.innerHTML.includes("Statistique")) {
+                //     $("#content-container").addClass("bg-gradient-primary");
+                // } else {
+                // // Retirez la classe "statistique-bg" si le lien "Statistique" n'est pas actif
+                //  $("#content-container").removeClass("bg-gradient-primary");
+                // }
+
+                //on active pas pour les menus monome et binome
+                if (this.innerHTML.includes("monome") || this.innerHTML.includes("binome")) {
+                    $(".nav-link[data-url='{%url 'faire_demande' %}']").addClass("active");
+                } 
+
+                // Gérer l'affichage du lien "Déconnexion"
+                if (this.innerHTML.includes("{{username}}")) {   
+                    $("#logout-li").toggleClass("d-none");
+                }
+
+                // Gérer l'affichage de monome et binome
+                if (this.innerHTML.includes("Faire une demande")) {   
+                    $(".mobi").toggleClass("d-none");
+                }
+
+                
+
+                //on ne redirige pas pour le menu faire une demande et username
+                if (!this.innerHTML.includes("Faire une demande") && !this.innerHTML.includes("{{username}}")) {
+
+
+                        // Obtenez l'URL de la vue à charger depuis l'attribut data
+                        var viewUrl = $(this).data("url");
+
+                        // Chargez le contenu de la vue en utilisant AJAX
+                        $.ajax({
+                            url: viewUrl,
+                            method: 'GET',
+                            dataType: 'html',
+                            success: function(data) {
+                                $("#content-container").html(data);
+                            },
+                            error: function(error) {
+                                alert("erreur")
+                                console.log("Erreur : " + error);
+                            }
+                        });
+                }
+
+    
+            });
+
+            $("#mybutton").click(function(e) {
+                $("#collapsibleNavbar").toggleClass("d-none");
+            
+            });
+            
+           
+
+            // Cliquez automatiquement sur le lien "Statistique" au démarrage
+            $(".nav-link.active").click();
+            
+        });
+
+    </script>
+</body>
+</html>

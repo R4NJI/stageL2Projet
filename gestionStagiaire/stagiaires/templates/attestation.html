@@ -1,0 +1,83 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src="{% static 'js/he.js' %}"></script>
+        <script src="{% static 'js/jquery-3.7.1.js' %}"></script>
+        <script src="{% static 'js/html2canvas.min.js' %}"></script>
+        <script src="{% static 'js/jspdf.umd.min.js' %}"></script>
+        <script src="{% static 'js/jspdf.plugin.autotable.min.js' %}"></script>
+        <script src="{% static 'js/html2pdf.bundle.js' %}"></script>
+        <script>
+            $(document).ready(function() {
+                // Créer un objet Date
+                var date = new Date();
+            
+                // Obtenir l'année actuelle
+                var anneeActuelle = date.getFullYear();
+        
+
+              
+                // Génération du PDF
+                const pdf = new window.jspdf.jsPDF();
+
+                pdf.setFontSize(12);
+                pdf.setFont("times");
+                // pdf.setTextColor(128, 128, 128);
+
+                // Ajouter du texte au PDF
+                pdf.text("REPOBLIKAN'I MADAGASIKARA", 81, 30);
+                pdf.text("Fitiavana - Tanindrazana - Fandrosoana", 80, 35);
+                pdf.text("--------------------------", 95, 40);
+
+                pdf.text("MINISTERE DE L'INTERIEUR", 45, 50);
+                pdf.text("ET DE LA DECENTRALISATION",42, 55);
+                pdf.text("********", 65, 60);
+                pdf.text("SECRETARIAT GENERAL", 50, 65);
+                pdf.text("********", 65, 70);
+                pdf.text("DIRECTION GENERALE DE LA REFORME", 32, 75);
+                pdf.text("ADMINISTRATIVE", 55, 80);
+                pdf.text("********", 65, 85);
+                pdf.text("{{ dest1|safe }}", 28, 90);
+                pdf.text("********", 65, 95);
+                // Utiliser setFont pour changer la famille de police en gras
+                pdf.setFont("times", "bold");
+
+                pdf.text("ATTESTATION DE STAGE", 80, 110);
+                pdf.setFontSize(17);
+                pdf.text("__________________", 80, 110.5);
+                
+                
+                pdf.setFontSize(12);
+                pdf.setFont("times","none");
+
+                const options = {
+                    lineHeightFactor:2,
+                }
+                
+                const text = "\t\tLe Directeur des " +  "{{ dest2|safe }}"  + " du Ministère de l’Intérieur et de la Décentralisation, soussigné, atteste par la présente que " + "{{ etudiant.nomEtudiant }} {{ etudiant.prenomEtudiant }}" + " a effectué un stage de ... mois, du " + "{{ etudiant.stage.dateDebut }}" + " au " + "{{ etudiant.stage.dateFin }}" + ", auprès de notre département, en vue de l’obtention du diplôme de ... \n\t\tEn foi de quoi, la présente attestation lui est délivrée pour servir et valoir ce que de droit.";
+
+                const maxWidth = 115; // Largeur maximale de la ligne
+                const lines = pdf.splitTextToSize(text, maxWidth);
+
+                pdf.text(lines, 45, 140,options);
+
+                date = { label: "Antananarivo, le ", value: "{{ date_actuelle }}" }
+                pdf.text(`${date.label} ${date.value}`, 120, 230);
+        
+            
+                // Enregistrer ou afficher le document PDF
+                pdf.save("attestation.pdf");
+
+                loadContent("{% url 'stage_termine' %}" + "?type={{ type }}");
+           
+                });
+
+    </script>
+</head>
+
+<body>
+</body>
+</html>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 

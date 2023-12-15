@@ -1,0 +1,147 @@
+<div class="table-with-scroll2" >
+    <div class="container">    
+            <div class="row">
+                {% if messages %}
+                    {% for message in messages %}
+                    <div class="alert alert-success alert-dismissible mt-3">
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                {% endif %}
+                <form action="{% url 'modifier_demande' demande.etudiant.idEtudiant %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <fieldset>
+                        <legend>Etudiant</legend>
+                        <div class="row mb-3">
+                            <div class="col-sm-6">
+                            <label for="matricule">Matricule:</label>
+                            <input type="text" class="form-control" id="matircule" placeholder="Entrer le matricule" name="matricule" value="{{ demande.etudiant.matricule }}" required>
+                            </div>
+                            
+                            <div class="col-sm-6">
+                                <label for="nom">Nom:</label>
+                                <input type="text" class="form-control" id="nom" placeholder="Entrer votre nom" name="nom" value="{{ demande.etudiant.nomEtudiant }}" required>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-sm-6">
+                                <label for="prenom">Prénoms:</label>
+                                <input type="text" class="form-control" id="prenom" placeholder="Entrer votre prénom" name="prenom" value="{{ demande.etudiant.prenomEtudiant }}" required>
+                            </div>
+                            
+                            <div class="col-sm-6">
+                                <label for="adresse">Adresse:</label>
+                                <input type="text" class="form-control" id="adresse" placeholder="Entrer votre adresse" name="adresse" value="{{ demande.etudiant.adresseEtudiant}}" required>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-sm-6">
+                            <label for="tel">Téléphone:</label>
+                            <input type="text" class="form-control" id="tel" placeholder="Entrer votre téléphone" name="tel" value="{{ demande.etudiant.telephoneEtudiant }}" required>
+                            </div>
+
+                            <div class="col-sm-6">
+                            <label for="email">Email:</label>
+                            <input type="text" class="form-control" id="email" placeholder="Entrer votre email" name="email" value="{{ demande.etudiant.emailEtudiant }}" required>
+                            </div>
+                        </div>
+
+                    </fieldset>
+
+                    <fieldset>
+                        <legend>Dossier de l'étudiant</legend>
+                        <div class="row mb-3">
+
+                            <div class="col-sm-6">
+                                <label for="cv">CV:</label>
+                                <input type="file" class="form-control" id="cv" name="cv">
+                            </div>
+                            
+                            <div class="col-sm-6">
+                                <label for="lettreMotiv">Lettre de motivation:</label>
+                                <input type="file" class="form-control" id="lettreMotiv" name="lettreMotiv">
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-sm-6">
+                                <label for="autreFichier">Autres fichiers:</label>
+                                <input type="file" class="form-control" id="autreFichier" name="autreFichier">
+                            </div>
+                        </div>
+                    </fieldset>
+
+
+                    <fieldset>
+                        <legend>Stage</legend>
+                        <div class="row mb-3">
+                            <div class="col-sm-6">
+                                <label for="ecole">Ecole:</label>
+                                <input type="text" class="form-control" id="ecole" placeholder="Entrer votre école" name="ecole" value="{{ demande.etudiant.stage.ecole }}" required>
+                            </div>
+                            
+                            <div class="col-sm-6">
+                                <label for="domaine">Domaine:</label>
+                                <input type="text" class="form-control" id="domaine" placeholder="Entrer votre domaine" name="domaine" value="{{ demande.etudiant.stage.domaine }}" required>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-sm-6">
+                                <label for="niveau">Niveau:</label>
+                                <input type="text" class="form-control" id="niveau" placeholder="Entrer votre niveau" name="niveau" value="{{ demande.etudiant.stage.niveau }}" required>
+                            </div>
+                            
+                            <div class="col-sm-6">
+                                <label for="theme">Thème:</label>
+                                <input type="text" class="form-control" id="theme" placeholder="Entrer votre thème" name="theme" value="{{ demande.etudiant.stage.theme }}" required>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-sm-6">
+                                <label for="dateDebut">Date du début:</label>
+                                <input type="date" class="form-control" id="dateDebut" name="dateDebut" value="{{ demande.etudiant.stage.dateDebut|date:'Y-m-d' }}" required>
+                            </div>
+                            <div class="col-sm-6">
+                                <label for="dateFin">Date de fin:</label>
+                                <input type="date" class="form-control" id="dateFin" name="dateFin" value="{{ demande.etudiant.stage.dateFin|date:'Y-m-d' }}" required>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-sm-6">
+                                <label for="destinataire">Destinataire:</label>
+                                <select id="destinataire" name="destinataire">
+                                    {% if demande.etudiant.stage.destinataire == "DSI" %}
+                                    <option value="DSI">DSI</option>
+                                    <option value="DRH">DRH</option>
+                                    <option value="DAF">DAF</option>
+                                    {% elif demande.etudiant.stage.destinataire == "DRH" %}
+                                    <option value="DRH">DRH</option>
+                                    <option value="DSI">DSI</option>
+                                    <option value="DAF">DAF</option>
+                                    {% else %}
+                                    <option value="DAF">DAF</option>
+                                    <option value="DSI">DSI</option>
+                                    <option value="DRH">DRH</option>
+                                    {% endif %}
+                                </select>
+                            </div>
+                        </div>
+                    </fieldset>
+                    
+                    <div class="col-sm d-flex justify-content-center mb-3">
+                        <button type="submit" class="btn btn-success">Enregistrer</button>
+                    </div>
+
+                    
+                </form>
+            </div>
+        
+    </div>
+</div>

@@ -1,0 +1,74 @@
+<div class="table-with-scroll" >
+    <div class="container">    
+        <div class="row justify-content-center">
+            <div class="col-6">
+                {% if messages %}
+                    {% for message in messages %}
+                    <div class="alert alert-success alert-dismissible mt-3">
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                {% endif %}
+                <a href="#" class="link" data-url="{% url 'personnel' %}">Retour</a>
+                <form action="{% url 'ajouter_personnel' %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <fieldset>
+                        <legend>Encadreur</legend>
+                        <div class="mb-3 mt-3">
+                            <label for="im">IM:</label>
+                            <input type="text" class="form-control" id="im" placeholder="Entrer l'IM" name="im" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="nomPersonnel">Nom:</label>
+                            <input type="text" class="form-control" id="nomPersonnel" placeholder="Entrer le nom" name="nomPersonnel" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="prenomPersonnel">Prénoms:</label>
+                            <input type="text" class="form-control" id="prenomPersonnel" placeholder="Entrer le prénom" name="prenomPersonnel" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="telephonePersonnel">Téléphone:</label>
+                            <input type="text" class="form-control" id="telephonePersonnel" placeholder="Entrer le numéro de téléphone" name="telephonePersonnel" required>
+                        </div>
+
+                        <div class="mb-3">
+                        <label for="emailPersonnel">Email:</label>
+                        <input type="text" class="form-control" id="emailPersonnel" placeholder="Entrer l'email" name="emailPersonnel" required>
+                        </div>
+                    </fieldset>
+                    
+                    <button type="submit" class="btn btn-primary">Envoyer</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+            $(".link").click(function(e) {
+                e.preventDefault(); // Empêchez le lien de changer de page
+        
+                // Obtenez l'URL de la vue à charger depuis l'attribut data
+                var viewUrl = $(this).data("url");
+                // Chargez le contenu de la vue en utilisant AJAX
+
+                $.ajax({
+                    url: viewUrl,
+                    method: 'GET',
+                    dataType: 'html',
+                    success: function(data) {
+                        $("#content-container").html(data);
+                    },
+                    error: function(error) {
+                        alert("erreur")
+                        console.log("Erreur : " + error);
+                    }
+                });
+                
+        });
+
+</script>

@@ -1,0 +1,232 @@
+<div class="container row">
+    <legend>Statistiques des stages</legend>
+
+    <div class="row">
+        <!-- Graphique à barres -->
+        <div class="col-sm-6">
+            <canvas id="barChart" width="300" height="300"></canvas>
+        </div>
+
+        <!-- Graphique à camembert -->
+        <div class="col-sm-6">
+            <canvas id="doughnutChart" width="300" height="300"></canvas>
+        </div>
+    </div>
+
+    <div class="row">
+        <legend>Statistiques des rapports</legend>
+        <!-- Graphique à bâtons collés pour les rapports -->
+        <div class="col-sm-6">
+            <canvas id="groupedBarChartRapports" width="250" height="250"></canvas>
+        </div>
+        
+        <div class="col-sm-6">
+            <canvas id="pieChart" width="250" height="250"></canvas>
+        </div>
+    </div>
+
+    <script>
+        //Enregistrer le plugin
+        Chart.register(ChartDataLabels);
+        
+        // Configuration du graphique à barres
+
+        var barChartOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    maxTicksLimit: 5,
+                    callback: function(value) {
+                        return Number(value).toFixed(0);  // Afficher la valeur du nombre
+                    }
+                }
+            }
+        };
+
+        // Configuration du graphique à camembert
+        var doughnutChartOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+        };
+
+        // Utilisez les données du contexte pour alimenter le graphique à barres
+        var barChartData = {
+            labels: ["En attente", "Accepté", "Refusé", "Terminé", "Expiré"],
+            datasets: [{
+                label: 'Nombre de stages',
+                data: [
+                    "{{ nombre_stages_attente }}",
+                    "{{ nombre_stages_accepte }}",
+                    "{{ nombre_stages_refuse }}",
+                    "{{ nombre_stages_termine }}",
+                    "{{ nombre_stages_expire }}"
+                ],
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255,99,132,1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)'
+                ],
+                borderWidth: 1
+            }]
+        };
+
+        // Utilisez les données du contexte pour alimenter le graphique à camembert
+        var doughnutChartData = {
+            labels: ["En attente", "Accepté", "Refusé", "Terminé", "Expiré"],
+            datasets: [{
+                label: 'Nombre de stages',
+                data: [
+                    "{{ nombre_stages_attente }}",
+                    "{{ nombre_stages_accepte }}",
+                    "{{ nombre_stages_refuse }}",
+                   " {{ nombre_stages_termine }}",
+                   " {{ nombre_stages_expire }}"
+                ],
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255,99,132,1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)'
+                ],
+                borderWidth: 1
+            }]
+        };
+
+        // Utilisez les données du contexte pour alimenter le graphique à bâtons collés pour les rapports
+        var groupedBarChartDataRapports = {
+            labels: ["En attente", "Validé", "Refusé"],
+            datasets: [{
+                label: 'Nombre de rapports',
+                data: [
+                    "{{ nombre_rapport_attente }}",
+                    "{{ nombre_rapport_valide }}",
+                    "{{ nombre_rapport_refuse }}"
+                ],
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255,99,132,1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)'
+                ],
+                borderWidth: 1
+            }]
+        };
+
+        // Configuration du graphique à bâtons collés pour les rapports
+        var groupedBarChartOptionsRapports = {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: {
+                    stacked: true
+                },
+                y: {
+                    stacked: true
+                }
+            }
+        };
+
+
+
+
+        // Utilisez les données du contexte pour alimenter le graphique en secteurs (pie chart)
+        var pieChartData = {
+            labels: ["En attente", "Validé", "Refusé"],
+            datasets: [{
+                data: [
+                    "{{ nombre_rapport_attente }}",
+                    "{{ nombre_rapport_valide }}",
+                    "{{ nombre_rapport_refuse }}"
+                ],
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255,99,132,1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)'
+                ],
+                borderWidth: 1
+            }]
+        };
+
+        // Configuration du graphique en secteurs (pie chart) avec datalabels
+        var pieChartOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                datalabels: {
+                    display:true,
+                    color: '#000', // Couleur du texte
+                    formatter: (value, context) => {
+                        return context.dataset.data[context.dataIndex]; // Afficher la valeur du nombre
+                    }
+                }
+            }
+        };
+
+        // Obtenez le contexte du graphique à bâtons collés pour les rapports
+        var ctxGroupedBarChartRapports = document.getElementById('groupedBarChartRapports').getContext('2d');
+        // Créer le graphique à bâtons collés pour les rapports
+        new Chart(ctxGroupedBarChartRapports, {
+            type: 'bar',
+            data: groupedBarChartDataRapports,
+            options: groupedBarChartOptionsRapports
+        });
+
+
+
+        // Obtenez le contexte du graphique à barres
+        var ctxBarChart = document.getElementById('barChart').getContext('2d');
+        // Créer le graphique à barres
+        new Chart(ctxBarChart, {
+            type: 'bar',
+            data: barChartData,
+            options: barChartOptions
+        });
+
+        // Obtenez le contexte du graphique à camembert
+        var ctxDoughnutChart = document.getElementById('doughnutChart').getContext('2d');
+        // Créer le graphique à camembert
+        new Chart(ctxDoughnutChart, {
+            type: 'doughnut',
+            data: doughnutChartData,
+            options: doughnutChartOptions
+        });
+
+        // Obtenez le contexte du graphique en secteurs (pie chart)
+        var ctxPieChart = document.getElementById('pieChart').getContext('2d');
+        // Créer le graphique en secteurs (pie chart)
+        new Chart(ctxPieChart, {
+            type: 'pie',
+            data: pieChartData,
+            options: pieChartOptions
+        });
+    </script>
+</div>
+

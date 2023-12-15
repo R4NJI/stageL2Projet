@@ -1,0 +1,254 @@
+{% load static %}
+<nav class="navbar navbar-expand-sm">
+    <div class="container-fluid">
+
+        <!-- Dropdown avec la balise select de Bootstrap -->
+        <div class="dropdown">
+            <select class="custom-select" id="dropdownMenuButton">
+            <option selected>Choisissez une option</option>
+            <option value="0">Toute</option>
+            <option value="1">DSI</option>
+            <option value="2">DRH</option>
+            <option value="3">DAF</option>
+            </select>
+        </div>
+    
+        <form class="d-flex" id="search-form">
+            {% csrf_token %}
+            <input class="form-control me-2" type="text" id="param-input" placeholder="Rechercher" name="param" required>
+            <a id="rechercher-link" href="#" data-url="{% url 'demande_search' %}" style="position: relative;right: 40px;top:4px">
+                <img src="{% static 'images/icon_search.png' %}">
+            </a>
+        </form>
+    </div> 
+
+</nav>
+
+    <div class="table-responsive table-with-scroll ">
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-success alert-dismissible mt-3">
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            {{ message }}
+        </div>
+        {% endfor %}
+        {% endif %}
+        <table class="table table-hover table-rounded">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Stage N°</th>
+                    {% if type == "Terminé" or type == "Accepté" %}
+                    <th colspan="2" style="text-align: center;">Encadreur</th>
+                    {% endif %}
+                    <th>Matricule</th>
+                    <th>Destinataire</th>
+                    <th>Nom</th>
+                    <th>Prénom</th>
+                    {% if type == "En attente" or type == "Refusé" %}
+                    <th>Adresse</th>
+                    <th>Ecole</th>
+                    <th>CV</th>
+                    <th>Lettre de motivation</th>
+                    <th>Autre fichier</th>
+                    {% endif %}
+                    <th>Domaine</th>
+                    <th>Thème</th>
+                    <th>Niveau</th>
+                    <th>Date du début</th>
+                    <th>Date de fin</th>
+                    <th>Téléphone</th>
+                    <th>Email</th>
+                    {% if type == 'Accepté' %}
+                    <th>Fiche technique</th>
+                    {% endif %}
+                    {% if type == 'Terminé' %}
+                    <th>Attestation</th>
+                    {% endif %}
+                    <th>Statut</th>
+                    {% if type == 'Accepté' %}
+                    <th style="text-align: center;">Action</th>
+                    {% else %}
+                    <th colspan="2" style="text-align: center;">Actions</th>
+                    {% endif %}
+                
+                </tr>
+            </thead>
+            <tbody>
+                {% for x in demandes %}
+                <tr>
+                        <td>{{ x.etudiant.idEtudiant }}</td>
+                        <td>{{ x.etudiant.stage.idStage }}</td>
+                        {% if type == "Terminé" or type == "Accepté" %}
+                            {% if x.etudiant.personnel.nomPersonnel %}    
+                            <td>{{ x.etudiant.personnel.nomPersonnel }}</td>
+                            <td>{{ x.etudiant.personnel.prenomPersonnel }}</td>
+                            {% else %}
+                            <td colspan="2" style="text-align: center;">Aucun</td>
+                            {% endif %}
+                        {% endif %}
+                        <td>{{ x.etudiant.matricule }}</td>
+                        <td>{{ x.etudiant.stage.destinataire }}</td>
+                        <td>{{ x.etudiant.nomEtudiant }}</td>
+                        <td>{{ x.etudiant.prenomEtudiant }}</td>
+                        {% if type == "En attente" or type == "Refusé" %}
+                        <td>{{ x.etudiant.adresseEtudiant }}</td>
+                        <td>{{ x.etudiant.stage.ecole }}</td>
+                        <td  style="text-align: center;">
+                        
+                            <a href="{% url 'download_file' x.numeroDemande 'cv' %}"><img src="{% static 'images/icondownload.png' %}"></a>
+                        </td>
+                        <td  style="text-align: center;">
+                            <a href="{% url 'download_file' x.numeroDemande 'lettreMotiv' %}"><img src="{% static 'images/icondownload.png' %}"></a>
+                        </td>
+                        <td  style="text-align: center;">
+                            <a href="{% url 'download_file' x.numeroDemande 'autreFichier' %}"><img src="{% static 'images/icondownload.png' %}"></a>
+                        </td>
+                        {% endif %}
+                        <td>{{ x.etudiant.stage.domaine }}</td>
+                        <td>{{ x.etudiant.stage.theme }}</td>
+                        <td>{{ x.etudiant.stage.niveau }}</td>
+                        <td>{{ x.etudiant.stage.dateDebut }}</td>
+                        <td>{{ x.etudiant.stage.dateFin }}</td>
+                        <td>{{ x.etudiant.telephoneEtudiant }}</td>
+                        <td>{{ x.etudiant.emailEtudiant }}</td>
+                        {% if type == 'Accepté' %}
+                        <td><a class="link" data-url="{% url 'fichetech' x.etudiant.stage.idStage %}"><img src="{% static 'images/icondownload.png' %}"></a></td>
+                        {% endif %}
+                        <td><a class="link" data-url="{% url 'attestation' x.etudiant.idEtudiant %}"><img src="{% static 'images/icondownload.png' %}"></a></td>
+                        <td>{{ x.etudiant.stage.statut }}</td>
+                        {% if is_superuser %}
+                            {% if type == 'En attente' %}
+                            <td><a href="#" class="link btn btn-primary" data-url="{% url 'accept' x.numeroDemande %}">Accepter</a></td>
+                            {% endif %}
+                        <td>
+                            <a class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#myModalDelete{{ x.numeroDemande }}">
+                                {% if type == "En attente" %}Refuser
+                                {% else %}Supprimer 
+                                {% endif %}
+                            </a>
+                        
+                            <!-- The Modal -->
+                            
+                            <div class="modal fade" id="myModalDelete{{ x.numeroDemande }}">
+                                <div class="modal-dialog">
+                                <div class="modal-content">
+                            
+                                    <!-- Modal Header -->
+                                    <div class="modal-header">
+                                    <h4 class="modal-title">Avertissement!</h4>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+                            
+                                    <!-- Modal body -->
+                                    <div class="modal-body">
+                                        Êtes-vous sûre de vouloir {% if type == "Refusé" %}supprimer{% elif type == "En attente" %}refuser{% else %}terminer{% endif %} cette demande n°{{ x.numeroDemande }}?
+                                    </div>
+                            
+                                    <!-- Modal footer -->
+                                    <div class="modal-footer">
+                                    <a href="#" class="link btn btn-danger" data-url="{% if type == 'En attente' %} {% url 'refuse' x.numeroDemande %}  {% else %} {% url 'delete' x.numeroDemande %} {% endif %}" data-bs-dismiss="modal"><span>Oui</span></a>
+                                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Non</button>
+                                    </div>
+                            
+                                </div>
+                                </div>
+                            </div>
+                        </td>
+                        {% else %}
+                            {% if type == "En attente" and user_id and x.user.id == user_id %}
+                            <td><a href="#" class="link btn btn-primary" data-url="{% url 'demande_modifiee' x.etudiant.idEtudiant %}">Modifier</a></td>
+                            {% else %}
+                            <td> <img src="{% static 'images/iconempty.png' %}"></td>
+                            {% endif %}
+                        {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+
+    <script>
+          // Fonction pour charger le contenu via AJAX
+        function loadContent(url) {
+            $.ajax({
+            url: url,
+            method: 'GET',
+            dataType: 'html',
+            success: function(data) {
+                $("#content-container").html(data);
+            },
+            error: function(error) {
+                alert("erreur");
+                console.log("Erreur : " + error);
+            }
+            });
+        }
+
+        //Pour charger les liens sans chargements
+        $(".link").click(function(e) {
+                e.preventDefault(); // Empêchez le lien de changer de page
+
+                var newText = $(this).data("text");
+                 $("#dropdownMenuLink").text(newText);
+
+                // Obtenez l'URL de la vue à charger depuis l'attribut data
+                var viewUrl = $(this).data("url") + "?type={{ type }}";
+                // Chargez le contenu de la vue en utilisant AJAX
+
+                loadContent(viewUrl);
+                
+        });
+
+        $("#dropdownMenuButton").change(function(e) {
+            // Récupérer la valeur sélectionnée
+            var selectedValue = this.value;
+
+            // Rediriger vers l'URL spécifiée en fonction de la valeur sélectionnée
+            switch (selectedValue) {
+                case '0':
+
+                loadContent("{% url 'demande_search' %}" + "?type={{ type }}");
+                break;
+                case '1':
+                loadContent("{% url 'demande_filtreDSI' %}" + "?type={{ type }}");
+                break;
+                case '2':
+                loadContent("{% url 'demande_filtreDRH' %}" + "?type={{ type }}");
+                break;
+                case '3':
+                loadContent("{% url 'demande_filtreDAF' %}" + "?type={{ type }}");
+                break;
+                default:
+                // Redirection par défaut ou ne rien faire
+                break;
+            }
+        })
+
+        
+
+
+        $("#rechercher-link").click(function(e) {
+            e.preventDefault(); // Empêchez le lien de changer de page
+
+            // Récupérez la valeur de l'input
+            var paramValue = $("#param-input").val();
+
+            // Obtenez l'URL de la vue à charger depuis l'attribut data
+            var viewUrl = $(this).data("url") + "?param=" + paramValue + "&type={{ type }}"; // Ajoutez le paramètre à l'URL
+
+            // Chargez le contenu de la vue en utilisant AJAX
+            loadContent(viewUrl);
+        });
+
+        
+    
+
+
+
+    </script>
+    
+   
+
+

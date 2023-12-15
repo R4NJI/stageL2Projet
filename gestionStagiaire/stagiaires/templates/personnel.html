@@ -1,0 +1,184 @@
+{% load static %}
+<nav class="navbar navbar-expand-sm navbar-dark ">
+    <div class="container-fluid">
+        {% if is_superuser %}
+        <a class="link btn btn-secondary" data-url="{% url 'formulaire_personnel' %}">Ajouter un encadreur</a>
+        {% endif %}
+        <form class="d-flex" id="search-form">
+            {% csrf_token %}
+            <input class="form-control me-2" type="text" id="param-input" placeholder="Rechercher" name="param" required>
+            <a class="link" id="rechercher-link" href="#" data-url="{% url 'personnel_search' %}" style="position: relative;right: 40px;top:4px">
+                <img src="{% static 'images/icon_search.png' %}">
+            </a>
+        </form>
+
+    </div>
+   
+ 
+
+</nav>
+
+<div class="table-responsive table-with-scroll">
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-success alert-dismissible mt-3">
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        {{ message }}
+    </div>
+    {% endfor %}
+    {% endif %}
+    <table class="table table-hover table-rounded">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>IM</th>
+                <th>Nom</th>
+                <th>Prénoms</th>
+                <th>Téléphone</th>
+                <th>Email</th>
+                {% if is_superuser %}
+                <th colspan="2">Action</th>
+                {% endif %}
+
+            </tr>
+        </thead>
+        {% for x in personnels %}
+        <tbody>
+            <tr>
+                    <td>{{ x.idPersonnel }}</td>
+                    <td>{{ x.im }}</td>
+                    <td>{{ x.nomPersonnel }}</td>
+                    <td>{{ x.prenomPersonnel }}</td>
+                    <td>{{ x.telephonePersonnel }}</td>
+                    <td>{{ x.emailPersonnel }}</td>
+                    {% if is_superuser %}
+                    <td>
+                        <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModalAffecter{{ x.idPersonnel }}">Affecter</a>
+                            <!-- The Modal -->
+                            
+                            <div class="modal fade" id="myModalAffecter{{ x.idPersonnel}}">
+                                <div class="modal-dialog">
+                                <div class="modal-content">
+                            
+                                    <!-- Modal Header -->
+                                    <div class="modal-header">
+                                    <h4 class="modal-title">Affectation de {{ x.nomPersonnel }} {{ x.prenomPersonnel }} !</h4>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+                            
+                                    <!-- Modal body -->
+                                    <div class="modal-body">
+                                        <form class="d-flex" id="search-form">
+                                            {% csrf_token %}
+                                            <input class="form-control me-2 param-input" type="number" min="1" data-personnel-id="{{ x.idPersonnel }}" placeholder="Entrer l'identifiant de l'étudiant" name="param" required>
+                                        </form>
+                                    </div>
+                            
+                                    <!-- Modal footer -->
+                                    <div class="modal-footer">
+                                        <a href="#" class="link2 btn btn-primary" data-personnel-id="{{ x.idPersonnel }}" data-url="{% url 'affecter_personnel' x.idPersonnel %}" data-bs-dismiss="modal">Valider</a>
+                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Annuler</button>
+                                    </div>
+                            
+                                </div>
+                                </div>
+                            </div>
+                    
+                   
+                        <a class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#myModalDelete{{ x.idPersonnel }}">
+                            Supprimer 
+                        </a>
+                    
+                        <!-- The Modal -->
+                        
+                        <div class="modal fade" id="myModalDelete{{ x.idPersonnel }}">
+                            <div class="modal-dialog">
+                            <div class="modal-content">
+                        
+                                <!-- Modal Header -->
+                                <div class="modal-header">
+                                <h4 class="modal-title">Avertissement!</h4>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                        
+                                <!-- Modal body -->
+                                <div class="modal-body">
+                                    Êtes-vous sûre de vouloir supprimer {{ x.nomPersonnel }} {{ x.prenomPersonnel }}?
+                                </div>
+                        
+                                <!-- Modal footer -->
+                                <div class="modal-footer">
+                                <a href="#" class="link btn btn-danger" data-url="{% url 'delete_personnel' x.idPersonnel %}" data-bs-dismiss="modal"><span>Oui</span></a>
+                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Non</button>
+                                </div>
+                        
+                            </div>
+                            </div>
+                        </div> 
+                    </td>
+                    {% endif %}
+            
+            </tr>
+        </tbody>
+        {% endfor %}
+    </table>
+
+</div>
+<script>
+    
+    $(".link").click(function(e) {
+                e.preventDefault(); // Empêchez le lien de changer de page
+        
+                // Récupérez la valeur de l'input
+                var paramValue = $("#param-input").val();
+              
+                // Obtenez l'URL de la vue à charger depuis l'attribut data
+                var viewUrl = $(this).data("url") + "?param=" + paramValue;
+                // Chargez le contenu de la vue en utilisant AJAX
+
+                $.ajax({
+                    url: viewUrl,
+                    method: 'GET',
+                    dataType: 'html',
+                    success: function(data) {
+                        $("#content-container").html(data);
+                    },
+                    error: function(error) {
+                        alert("erreur")
+                        console.log("Erreur : " + error);
+                    }
+                });
+                
+        });
+
+    $(".link2").click(function(e) {
+                e.preventDefault(); // Empêchez le lien de changer de page
+        
+            // Récupérer l'identifiant du personnel correspondant à ce bouton "Affecter"
+               var personnelId = $(this).data("personnel-id");
+
+               // Récupérer la valeur de l'input correspondant à cet enregistrement
+               var inputValue = $(".param-input[data-personnel-id='" + personnelId + "']").val();
+
+
+                // Obtenez l'URL de la vue à charger depuis l'attribut data
+                var viewUrl = $(this).data("url") + "?param=" + inputValue;
+
+                // Chargez le contenu de la vue en utilisant AJAX
+
+                $.ajax({
+                    url: viewUrl,
+                    method: 'GET',
+                    dataType: 'html',
+                    success: function(data) {
+                        $("#content-container").html(data);
+                    },
+                    error: function(error) {
+                        alert("erreur")
+                        console.log("Erreur : " + error);
+                    }
+                });
+                
+        });
+
+</script>

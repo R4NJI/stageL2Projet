@@ -1,0 +1,147 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src="{% static 'js/jquery-3.7.1.js' %}"></script>
+        <script src="{% static 'js/html2canvas.min.js' %}"></script>
+        <script src="{% static 'js/jspdf.umd.min.js' %}"></script>
+        <script src="{% static 'js/jspdf.plugin.autotable.min.js' %}"></script>
+        <script src="{% static 'js/html2pdf.bundle.js' %}"></script>
+        <script src="{% static 'js/bootstrap.min.js' %}"></script>
+        <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+        <script>
+            $(document).ready(function() {
+                // Créer un objet Date
+                var date = new Date();
+            
+                // Obtenir l'année actuelle
+                var anneeActuelle = date.getFullYear();
+                    
+                // Fonction pour charger le contenu via AJAX
+                    function loadContent(url) {
+                    $.ajax({
+                    url: url,
+                    method: 'GET',
+                    dataType: 'html',
+                    success: function(data) {
+                        $("#content-container").html(data);
+                    },
+                    error: function(error) {
+                        alert("erreur");
+                        console.log("Erreur : " + error);
+                    }
+                    });
+                }
+            
+            
+            
+            
+            
+            
+                
+                        // Génération du PDF
+                        const pdf = new window.jspdf.jsPDF();
+            
+                        pdf.setFontSize(12);
+                        pdf.setFont("times");
+                        // pdf.setTextColor(128, 128, 128);
+            
+                        // Ajouter du texte au PDF
+                        pdf.text("{{ etudiant.ecole|safe }}", 30, 10);
+                        pdf.text("Année : " + anneeActuelle, 180, 10);
+                        
+                        //logo
+                        source = "{% static 'images/logo.png' %}";
+
+                        // Ajouter l'image au document PDF
+                        pdf.addImage(source, 'PNG', 95, 1, 30, 20);
+
+
+                        pdf.setFontSize(20);
+                        pdf.text("GRILLE D'EVALUATION ET D'APPRECIATION",35,40);
+                        pdf.setFontSize(12);
+            
+                        // Ajouter les valeurs des champs de formulaire au PDF
+                        const fields = [
+                            { label: "Nom et prénoms du stagiaire:", value: "{{ etudiant.nomEtudiant|safe }} {{ etudiant.prenomEtudiant|safe }}" },
+                            { label: "Numéro d'inscription:", value: "{{ etudiant.matricule|safe }}" },
+                            { label: "Année universitaire:", value: anneeActuelle-1 + "-" + anneeActuelle },
+                            { label: "Niveau d'étude:", value: "{{ etudiant.stage.niveau|safe  }}" },
+                            { label: "Domaine:", value: "{{ etudiant.stage.domaine|safe }}" },
+                            { label: "Lieu de stage:", value: "Ministère de l'Intérieur et de la Décentralisation"},
+                            { label: "Encadreur professionnel:", value: "{{ etudiant.personnel.nomPersonnel|safe }} {{ etudiant.personnel.prenomPersonnel|safe }}" },
+                        ];
+            
+                        fields.forEach((field, index) => {
+                            const yPos = 60 + index * 10;
+                            pdf.text(`${field.label} ${field.value}`, 30, yPos);
+                        });
+            
+                        // Données du tableau
+                        var data = [
+                            ['1. SENS DE LA DICIPLINE'],
+                            ['Assiduité'] ,
+                            ['Relation avec le personnel'],
+                            ['2. CAPACITE PROFESSIONNELLE'],
+                            ['Intégration à l\'équipe de travail'],
+                            ['Autonomie dans le travail'],
+                            ['Organisation du temps et respect du planning'],
+                            ['3. EVALUATION DE LA SOLUTION'],
+                            ['Découverte de solutions techniques appropriées'],
+                            ['Solution réalisée et exploitable par l\'établissement'],
+                            ['Cocher la case correspondante sans mettre des notes'],
+                        ];
+            
+                        // Configuration du tableau
+                        var columns = ['Critères', 'Très Bien', 'Bien', 'Assez-Bien','Passable'];
+            
+            
+                        // Ajouter le tableau avec AutoTable
+                        pdf.autoTable({
+                            head: [columns],
+                            body: data,
+                            theme: 'plain',
+                            styles: {
+                                halign: 'center', // Alignement horizontal pour tout le tableau
+                                lineWidth: 0.2, // Largeur de la bordure du tableau
+                                lineColor: [0, 0, 0] // Couleur de la bordure du tableau (noir)
+                            },
+                            startX: 10, // Ajustez la position horizontale du tableau
+                            startY: 130, // Ajustez la position verticale du tableau
+                            didParseCell: function (data) {
+                                
+                                if (( (data.row.index === 0 && data.cell.raw !== 'Critères') || data.row.index === 3 || data.row.index === 7 ) && data.column.index === 0 ) {
+                                    // Fusionner les cellules 
+                                    data.cell.colSpan = 5;
+                                    data.cell.styles.halign = 'left';
+                                    // Supprimer les bordures left, right et bottom 
+                                    data.cell.styles.lineWidth = 0;
+                                    data.cell.styles.lineColor = [255, 255, 255]; // Couleur de la bordure (blanc)
+                                }
+                                if (data.row.index === 10  && data.column.index === 0 ){
+                                    // Fusionner les cellules
+                                    data.cell.colSpan = 5;
+                                }
+                            }
+                        });            
+                        
+                        date = { label: "Fait à", value: "" }
+                        pdf.text(`${date.label} ${date.value}`, 120, 230);
+                        pdf.text("Signature et Cachet de l'Etablissement d'accueil",120,235);
+            
+                        pdf.save("grilleEvaluation.pdf");
+            
+                        loadContent("{% url 'rapportValide' %}");
+                        // loadContent("{% url 'rapport' %}")
+                        
+                        
+            
+            
+            
+            })
+            </script>
+    
+</head>
+</html>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 

@@ -1,0 +1,57 @@
+{% extends "admin/login.html" %}
+
+{% block branding %}
+    <h1 style="color:white">
+        Connexion de l'utilisateur <a style="color: black" href="{% url 'create_user' %}">(s'inscrire?)</a>
+    </h1>
+    <button class="theme-toggle">
+        <div class="visually-hidden theme-label-when-auto">Changer de thème (actuellement : automatique)</div>
+        <div class="visually-hidden theme-label-when-light">Changer de thème (actuellement : clair)</div>
+        <div class="visually-hidden theme-label-when-dark">Changer de thème (actuellement : sombre)</div>
+        <svg aria-hidden="true" class="theme-icon-when-auto">
+          <use xlink:href="#icon-auto"></use>
+        </svg>
+        <svg aria-hidden="true" class="theme-icon-when-dark">
+          <use xlink:href="#icon-moon"></use>
+        </svg>
+        <svg aria-hidden="true" class="theme-icon-when-light">
+          <use xlink:href="#icon-sun"></use>
+        </svg>
+    </button>
+{% endblock %}
+
+{% block footer %}
+    <script>
+       
+          
+            var loginForm = document.getElementById('login-form'); // Remplacez 'login-form' par l'ID de votre formulaire
+
+            if (loginForm) {
+                // Modifiez l'attribut action du formulaire selon votre besoin
+                loginForm.action = "{% url 'custom_login' %}";
+
+            }
+
+            // Ciblez l'élément label par son attribut 'for' 
+            // var label = document.querySelector('label[for="id_username"]');
+            // if (label) {
+            //     label.textContent = 'Nom d\'utilisatrice :';
+            // }
+
+          // Sélectionnez tous les éléments <p> dans la page
+            var elements = document.getElementsByTagName("p");
+
+            // Parcourez les éléments pour trouver ceux dont le contenu contient "Vous êtes"
+            for (var i = 0; i < elements.length; i++) {
+                var element = elements[i];
+                if (element.innerHTML.includes("Vous êtes")) {
+                    // Supprimez l'élément qui correspond au texte
+                    element.remove();
+                }
+            }
+
+
+        
+    </script>
+{% endblock %}
+

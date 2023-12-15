@@ -1,0 +1,110 @@
+{% extends "admin/login.html" %}
+
+{% block extrahead %}
+    {% load static %}
+ 
+    <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}">
+    <!-- Inclure d'autres fichiers CSS personnalisés si nécessaire -->
+{% endblock %}
+
+{% block branding %}
+    <h1 style="color:white">Inscription de l'utilisateur</h1>
+       
+    <button class="theme-toggle">
+        <div class="visually-hidden theme-label-when-auto">Changer de thème (actuellement : automatique)</div>
+        <div class="visually-hidden theme-label-when-light">Changer de thème (actuellement : clair)</div>
+        <div class="visually-hidden theme-label-when-dark">Changer de thème (actuellement : sombre)</div>
+        <svg aria-hidden="true" class="theme-icon-when-auto">
+          <use xlink:href="#icon-auto"></use>
+        </svg>
+        <svg aria-hidden="true" class="theme-icon-when-dark">
+          <use xlink:href="#icon-moon"></use>
+        </svg>
+        <svg aria-hidden="true" class="theme-icon-when-light">
+          <use xlink:href="#icon-sun"></use>
+        </svg>
+    </button>
+{% endblock %}
+
+{% block content %}
+        <form  method="post" action="{% url 'create_user' %}" id="login-form">
+            {% csrf_token %}
+            <div class="form-row">
+                {{ form.username.label_tag }}
+                {{ form.username }}
+            </div>
+
+            <div class="form-row">
+                {{ form.email.label_tag }}
+                {{ form.email }}
+            </div>
+            
+            <div class="form-row">
+                {{ form.password.label_tag }}
+                {{ form.password }}
+            </div>
+
+            <div class="form-row">
+                {{ form.password2.label_tag }}
+                {{ form.password2 }}
+            </div>
+
+            <div class="form-row" id="is_superuser-row">
+                {{ form.is_superuser.label_tag }}
+                {{ form.is_superuser }}
+            </div>
+
+                
+            <div class="submit-row">
+                    <button class="btn btn-sm btn-block" style="background-color: #264b5d;color:white" onmouseover="this.style.backgroundColor='#79aec8'" onmouseout="this.style.backgroundColor='#264b5d'"  type="submit">Créer l'utilisateur</button>
+            </div>
+        </form>
+  
+
+{% endblock %}
+
+{% block footer %}
+    <script>
+        var body = document.body;
+        if (body) {
+            body.style.color="#eeeeee";
+        }
+        // Sélectionnez tous les éléments 
+        var inputs = document.getElementsByTagName("input");
+      
+        // Parcourez les éléments <input> et attribuez-leur une largeur de 100%
+        for (var i = 0; i < inputs.length; i++) {
+            var input = inputs[i];
+            input.style.width = "100%";
+        }
+        // Ciblez l'élément label par son attribut 'for' 
+          var label = document.querySelector('label[for="id_password"]');
+          if (label) {
+              label.textContent = 'Mot de passe :';
+          }
+          
+        var isSuperUserRow = document.getElementById('is_superuser-row');
+        if (isSuperUserRow) {
+            isSuperUserRow.style.display = 'flex';
+            isSuperUserRow.style.alignItems = 'center';
+            isSuperUserRow.querySelector('label').style.flex = '1';
+            isSuperUserRow.querySelector('input[type="checkbox"]').style.marginLeft = '10px';
+        }
+
+        // Récupérer l'élément de la case à cocher par son ID
+        var checkbox = document.getElementById("id_is_superuser"),
+            div_checkbox = document.getElementById("is_superuser-row");
+            
+        // Ajouter l'attribut checked
+        var superuser = "{{ is_superuser }}"
+            
+        if (superuser === "True" || superuser === "False" ) {
+            // div_checkbox.style.display = "none"
+            if (superuser === "True" ) 
+                checkbox.checked = true;
+    
+        }
+        
+    </script>
+{% endblock %}
+

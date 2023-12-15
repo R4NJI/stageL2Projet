@@ -1,0 +1,92 @@
+<div class="table-with-scroll" >
+    <div class="container">    
+        <div class="row justify-content-center">
+            <div class="col-6">
+                <h1>{{ stagiaires }}</h1>
+                {% if messages %}
+                    {% for message in messages %}
+                    <div class="alert alert-success alert-dismissible mt-3">
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                {% endif %}
+                <form action="{% url 'addrecord' %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="mb-3 mt-3">
+                    
+                    <label for="matricule">Matricule:</label>
+                    <input type="text" class="form-control" id="matircule" placeholder="Entrer le matricule" name="matricule" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="nom">Nom:</label>
+                        <input type="text" class="form-control" id="nom" placeholder="Entrer votre nom" name="nom" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="prenom">Prénoms:</label>
+                        <input type="text" class="form-control" id="prenom" placeholder="Entrer votre prénom" name="prenom" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="adresse">Adresse:</label>
+                        <input type="text" class="form-control" id="adresse" placeholder="Entrer votre adresse" name="adresse" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="cv">CV:</label>
+                        <input type="file" class="form-control" id="cv" name="cv" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="lettreMotiv">Lettre de motivation:</label>
+                        <input type="file" class="form-control" id="lettreMotiv" name="lettreMotiv" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="autreFichier">Autres fichiers:</label>
+                        <input type="file" class="form-control" id="autreFichier" name="autreFichier" required>
+                    </div>
+
+                    <div class="mb-3">
+                    <label for="email">Email:</label>
+                    <input type="text" class="form-control" id="email" placeholder="Entrer votre email" name="email" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="ecole">Ecole:</label>
+                        <input type="text" class="form-control" id="ecole" placeholder="Entrer votre école" name="ecole" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="domaine">Domaine:</label>
+                        <input type="text" class="form-control" id="domaine" placeholder="Entrer votre domaine" name="domaine" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="theme">Thème:</label>
+                        <input type="text" class="form-control" id="theme" placeholder="Entrer votre thème" name="theme" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="dateDebut">Date du début:</label>
+                        <input type="date" class="form-control" id="dateDebut" name="dateDebut" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="dateFin">Date de fin:</label>
+                        <input type="date" class="form-control" id="dateFin" name="dateFin" required>
+                    </div>
+                    
+                    
+                    <button type="submit" class="btn btn-primary">Envoyer</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    
+</script>

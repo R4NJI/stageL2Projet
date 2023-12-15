@@ -1,0 +1,210 @@
+<div class="table-with-scroll2">
+    <div class="container">    
+        <div class="row">
+            
+                {% if messages %}
+                    {% for message in messages %}
+                    <div class="alert alert-success alert-dismissible mt-3">
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                {% endif %}
+                <form action="{% if ismonome %} {% url 'addrecord' %} {% else %} {% url 'addrecord2' %} {% endif %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <!-- <h1>Faire une demande en {% if ismonome %}monome{% else %}binome{% endif %}</h1> -->
+                    <fieldset>
+                        <legend>{% if ismonome %}Etudiant{% else %}Etudiant n°1 {% endif %}</legend>
+                        <div class="row mb-3">
+                            <div class="col-sm-6">
+                            <label for="matricule">Matricule:</label>
+                            <input type="text" class="form-control" id="matircule" placeholder="Entrer le matricule" name="matricule" required>
+                            </div>
+                            
+                            <div class="col-sm-6">
+                                <label for="nom">Nom:</label>
+                                <input type="text" class="form-control" id="nom" placeholder="Entrer le nom" name="nom" required>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">  
+                            <div class="col-sm-6">
+                                <label for="prenom">Prénoms:</label>
+                                <input type="text" class="form-control" id="prenom" placeholder="Entrer le prénom" name="prenom" required>
+                            </div>
+                            
+                            <div class="col-sm-6">
+                                <label for="adresse">Adresse:</label>
+                                <input type="text" class="form-control" id="adresse" placeholder="Entrer l'adresse" name="adresse" required>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3"> 
+                            <div class="col-sm-6">
+                                <label for="tel">Téléphone:</label>
+                                <input type="text" class="form-control" id="tel" placeholder="Entrer le numéro de téléphone" name="tel" required>
+                            </div>
+                            
+                            <div class="col-sm-6">
+                                <label for="email">Email:</label>
+                                <input type="text" class="form-control" id="email" placeholder="Entrer l'email" name="email" required>
+                            </div>
+                        </div>
+
+                    </fieldset>
+
+                    <fieldset>
+                        <legend>Dossier de l'étudiant{% if not ismonome %} n°1{% endif %}</legend>
+                        
+                        <div class="row mb-3">
+                            <div class="col-sm-6">
+                                <label for="cv">CV:</label>
+                                <input type="file" class="form-control" id="cv" name="cv" required>
+                            </div>
+                            
+                            <div class="col-sm-6">
+                                <label for="lettreMotiv">Lettre de motivation:</label>
+                                <input type="file" class="form-control" id="lettreMotiv" name="lettreMotiv" required>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-sm-6">
+                                <label for="autreFichier">Autres fichiers:</label>
+                                <input type="file" class="form-control" id="autreFichier" name="autreFichier" required>
+                            </div>
+                        </div>
+
+                    </fieldset>
+
+                    {% if not ismonome %}
+                    <fieldset>
+                        <legend>Etudiant n°2</legend>
+                        <div class="row mb-3">
+                            <div class="col-sm-6">
+                                <label for="matricule2">Matricule:</label>
+                                <input type="text" class="form-control" id="matircule2" placeholder="Entrer le matricule" name="matricule2" required>
+                            </div>
+                            
+                            <div class="col-sm-6">
+                                <label for="nom2">Nom:</label>
+                                <input type="text" class="form-control" id="nom2" placeholder="Entrer le nom" name="nom2" required>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-sm-6">
+                                <label for="prenom2">Prénoms:</label>
+                                <input type="text" class="form-control" id="prenom2" placeholder="Entrer le prénom" name="prenom2" required>
+                            </div>
+                            
+                            <div class="col-sm-6">
+                                <label for="adresse2">Adresse:</label>
+                                <input type="text" class="form-control" id="adresse2" placeholder="Entrer l'adresse" name="adresse2" required>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-sm-6">
+                                <label for="tel2">Téléphone:</label>
+                                <input type="text" class="form-control" id="tel2" placeholder="Entrer le numéro de téléphone" name="tel2" required>
+                            </div>
+                            
+                            <div class="col-sm-6">
+                                <label for="email2">Email:</label>
+                                <input type="text" class="form-control" id="email2" placeholder="Entrer l'email" name="email2" required>
+                            </div>
+                        </div>
+
+                    </fieldset>
+
+                    <fieldset>
+                        <legend>Dossiers de l'étudiant n°2</legend>
+                        <div class="row mb-3">
+                            <div class="col-sm-6">
+                                <label for="cv2">CV:</label>
+                                <input type="file" class="form-control" id="cv2" name="cv2" required>
+                            </div>
+                            
+                            <div class="col-sm-6">
+                                <label for="lettreMotiv2">Lettre de motivation:</label>
+                                <input type="file" class="form-control" id="lettreMotiv2" name="lettreMotiv2" required>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-sm-6">
+                                <label for="autreFichier2">Autres fichiers:</label>
+                                <input type="file" class="form-control" id="autreFichier2" name="autreFichier2" required>
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    {% endif %}
+
+
+                    <fieldset>
+                        <legend>Stage</legend>
+                        <div class="row mb-3">
+                          
+                            <div class="col-sm-6">
+                                <label for="ecole">Ecole:</label>
+                                <input type="text" class="form-control" id="ecole" placeholder="Entrer votre école" name="ecole" required>
+                            </div>
+                            
+                            <div class="col-sm-6">
+                                <label for="domaine">Domaine:</label>
+                                <input type="text" class="form-control" id="domaine" placeholder="Entrer votre domaine" name="domaine" required>
+                            </div>
+             
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-sm-6">
+                                <label for="theme">Thème:</label>
+                                <input type="text" class="form-control" id="theme" placeholder="Entrer votre thème" name="theme" required>
+                            </div>
+
+                            <div class="col-sm-6">
+                                <label for="niveau">Niveau:</label>
+                                <input type="text" class="form-control" id="niveau" placeholder="Entrer votre niveau" name="niveau" >
+                            </div>
+                        </div>
+                        
+                        
+                        <div class="row mb-3">
+                            <div class="col-sm-6">
+                                <label for="dateDebut">Date du début:</label>
+                                <input type="date" class="form-control" id="dateDebut" name="dateDebut" required>
+                            </div>
+                            <div class="col-sm-6">
+                                <label for="dateFin">Date de fin:</label>
+                                <input type="date" class="form-control" id="dateFin" name="dateFin" required>
+                            </div>
+                        </div>
+
+                        <div class="row mb-1">
+                            <div class="col-sm-6">
+                                <label for="destinataire">Destinataire:</label>
+                                <select id="destinataire" name="destinataire">
+                                    <option value="DSI">DSI</option>
+                                    <option value="DRH">DRH</option>
+                                    <option value="DAF">DAF</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-4">
+                            <div class="col-sm d-flex justify-content-center">
+                            <button type="submit" class="btn btn-success">Envoyer</button>
+                            </div>
+                        </div>
+                    </fieldset>
+                    
+
+                    
+                </form>
+          
+        </div>
+    </div>
+</div>

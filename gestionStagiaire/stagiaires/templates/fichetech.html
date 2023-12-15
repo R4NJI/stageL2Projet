@@ -1,0 +1,150 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src="{% static 'js/jquery-3.7.1.js' %}"></script>
+        <script src="{% static 'js/html2canvas.min.js' %}"></script>
+        <script src="{% static 'js/jspdf.umd.min.js' %}"></script>
+        <script src="{% static 'js/jspdf.plugin.autotable.min.js' %}"></script>
+        <script src="{% static 'js/html2pdf.bundle.js' %}"></script>
+        <script>
+            $(document).ready(function() {
+                // Créer un objet Date
+                var date = new Date();
+            
+                // Obtenir l'année actuelle
+                var anneeActuelle = date.getFullYear();
+        
+
+              
+                // Génération du PDF
+                const pdf = new window.jspdf.jsPDF();
+
+                pdf.setFontSize(12);
+                pdf.setFont("times");
+                // pdf.setTextColor(128, 128, 128);
+
+                // Ajouter du texte au PDF
+                pdf.text("{{ e1.stage.ecole|safe }}", 10, 10);
+                pdf.text("Année : " + anneeActuelle, 180, 10);
+
+                //logo
+                source = "{% static 'images/logo.png' %}";
+
+                // Ajouter l'image au document PDF
+                pdf.addImage(source, 'PNG', 95, 1, 30, 20);
+
+             
+
+
+                pdf.setFontSize(20);
+                pdf.text("FICHE TECHNIQUE",80,30);
+                pdf.setFontSize(12);
+                pdf.text("1. RENSEIGNEMENTS SUR L'ETABLISSEMENT  D'ACCUEIL", 30, 50);
+
+                // Ajouter les valeurs des champs de formulaire au PDF
+                const fields = [
+                    { label: "Sigle:", value: "" },
+                    { label: "Raison Sociale:", value: "" },
+                    { label: "Nom du responsable:", value: "" },
+                    { label: "Téléphone:", value: "" },
+                    { label: "Adresse Postale:", value: "" },
+                    { label: "Site Web:", value: "" },
+                    { label: "Encadreur professionnel:", value: "{{ e1.personnel.nomPersonnel|safe }} {{ e1.personnel.prenomPersonnel|safe }}" },
+                    { label: "Téléphone:", value: "{{ e1.personnel.telephonePersonnel|safe }}" },
+                ];
+
+            
+                fields.forEach((field, index) => {
+                    const yPos = 60 + index * 10;
+                    const xPos = (index >= 6) ? 50 : 30; // Ajuster la position horizontale pour les deux derniers labels
+                    pdf.text(`${field.label} ${field.value}`, xPos, yPos);
+                });
+
+                // Les champs E-mail restants
+                const fields2 = [
+                    { label: "E-mail:", value: "" },
+                    { label: "E-mail:", value: "{{ e1.personnel.emailPersonnel|safe }}" },
+                ];
+
+                fields2.forEach((field, index) => {
+                    const yPos = (index==0) ? 60 + 3 * 10 : 60 + 7 * 10;
+                    const xPos = 130; // Ajuster la position horizontale pour les deux derniers labels
+                    pdf.text(`${field.label} ${field.value}`, xPos, yPos);
+                });
+
+                pdf.text("2. SUJET PROPOSE", 30, 150);
+
+                
+                // Données du tableau
+                if ("{{ e2 }}") {
+                    var data = [
+                        ['{{ e1.nomEtudiant|safe }} {{ e1.prenomEtudiant|safe }}', '{{ e1.matricule|safe }}', '{{ e1.telephoneEtudiant|safe }}', '{{ e1.emailEtudiant|safe }}'],
+                        ['{{ e2.nomEtudiant|safe }} {{ e2.prenomEtudiant|safe }}', '{{ e2.matricule|safe }}', '{{ e2.telephoneEtudiant|safe }}', '{{ e2.emailEtudiant|safe }}'] ,
+                    ];
+                } else {
+                    var data = [
+                        ['{{ e1.nomEtudiant|safe }} {{ e1.prenomEtudiant|safe }}', '{{ e1.matricule|safe }}', '{{ e1.telephoneEtudiant|safe }}', '{{ e1.emailEtudiant|safe }}']
+                    ];
+
+                }
+
+                // Configuration du tableau
+                var columns = ['Nom et prénoms du stagiaire', 'IM', 'Téléphone', 'E-mail'];
+
+
+                // Ajouter le tableau avec AutoTable
+                pdf.autoTable({
+                    head: [columns],
+                    body: data,
+                    theme: 'plain',
+                    styles: {
+                        halign: 'center', // Alignement horizontal pour tout le tableau
+                        lineWidth: 0.2, // Largeur de la bordure du tableau
+                        lineColor: [0, 0, 0] // Couleur de la bordure du tableau (noir)
+                    },
+                    startX: 10, // Ajustez la position horizontale du tableau
+                    startY: 160, // Ajustez la position verticale du tableau
+                    didParseCell: function (data) {
+                        // Vérifier si c'est la troisième ligne et la première cellule
+                        if (data.row.index === 2 && data.column.index === 0) {
+                            // Fusionner les cellules pour que "Cellule 3" occupe 4 colonnes
+                            data.cell.colSpan = 4;
+                            data.cell.styles.halign = 'left';
+                            // Supprimer les bordures left, right et bottom pour la "Cellule 4"
+                            data.cell.styles.lineWidth = 0;
+                            data.cell.styles.lineColor = [255, 255, 255]; // Couleur de la bordure (blanc)
+                        }
+                    }
+                });
+
+                const fields3 = [
+                        { label: "Intitulé ou Thème:", value: "{{ e1.stage.theme|safe }}" },
+                        { label: "Objectif:", value: "" },
+                        { label: "Descriptif:", value: "" },
+                        { label: "Planning prévisionnel:", value: "" },
+                        { label: "Moyens logiciels:", value: "" },
+                        { label: "Moyens matériels:(précisez s'il s'agit de moyens disponibles ou à acquérir)", value: "" },
+                    ];
+
+                    
+                    fields3.forEach((field, index) => {
+                        const yPos = 200 + index * 20;
+                        const xPos = 30; // Ajuster la position horizontale pour les deux derniers labels
+                        pdf.text(`${field.label} ${field.value}`, xPos, yPos);
+                    });
+                    
+                    
+                    // Enregistrer ou afficher le document PDF
+                    pdf.save("ficheTechnique.pdf");
+
+                    loadContent("{% url 'demande_acceptee' %}" + "?type={{ type }}");
+                });
+
+    </script>
+</head>
+<body>
+</body>
+</html>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 

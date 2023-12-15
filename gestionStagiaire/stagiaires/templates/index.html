@@ -1,0 +1,41 @@
+{% extends "navbar.html" %}
+
+{% block container %}
+    <div class="table-responsive table-with-scroll">
+        <h1>Stagiaire</h1>
+
+        <table class="table table-hover">
+            <tr>
+                <th>matricule</th>
+                <th>idstage</th>
+                <th>Nom</th>
+                <th>Prénom</th>
+                <th>Adresse</th>
+                <th>Ecole</th>
+                <th>Filière</th>
+                <th>Email</th>
+                <th></th>
+                <th></th>
+            </tr>
+            {% for x in stagiaires %}
+                <tr>
+                    <td>{{ x.matricule }}</td>
+                    <td>{{ x.idStage }}</td>
+                    <td>{{ x.nomEtudiant }}</td>
+                    <td>{{ x.prenomEtudiant }}</td>
+                    <td>{{ x.adresseEtudiant }}</td>
+                    <td>{{ x.ecole }}</td>
+                    <td>{{ x.filiere }}</td>
+                    <td>{{ x.emailEtudiant }}</td>
+                    <td><a href="delete/{{ x.matricule }}">Supprimer</a></td>
+                    <td><a href="update/{{ x.matricule }}">Modifier</a></td>
+                </tr>
+            {% endfor %}
+        </table>
+
+        <p>
+            <a href="add/">Ajouter un stagiaire</a>
+        </p>
+    </div>
+
+{% endblock %}

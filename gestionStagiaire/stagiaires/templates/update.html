@@ -1,0 +1,35 @@
+<h1>Modifier un stagiaire</h1>
+
+<form action="updaterecord/{{ etudiant.matricule }}" method="post">
+{% csrf_token %}
+Matricule:<br>
+<input name="matricule" value="{{ etudiant.matricule }}" >
+<br><br>
+IdStage:<br>
+<input name="idstage" value="{{ etudiant.idStage }}">
+<br><br>
+Nom:<br>
+<input name="nom" value="{{ etudiant.nomEtudiant }}">
+<br><br>
+Prénom:<br>
+<input name="prenom" value="{{ etudiant.prenomEtudiant }}">
+<br><br>
+Adresse:<br>
+<input name="adresse" value="{{ etudiant.adresseEtudiant }}">
+<br><br>
+Ecole:<br>
+<input name="ecole" value="{{ etudiant.ecole }}">
+<br><br>
+Filière:<br>
+<input name="filiere" value="{{ etudiant.filiere }}">
+<br><br>
+Téléphone:<br>
+<input name="telephone" value="{{ etudiant.telephoneEtudiant }}">
+<br><br>
+Email:<br>
+<input name="email" value="{{ etudiant.emailEtudiant }}">
+<br><br>
+<input type="submit" value="Appliquer">
+</form>
+
+<a href="../">Retour à l'index</a>
