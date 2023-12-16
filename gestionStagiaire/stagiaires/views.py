@@ -19,6 +19,7 @@ from urllib.parse import quote
 from django.utils.text import get_valid_filename
 from django.db.models import Q
 from dateutil.relativedelta import relativedelta
+from datetime import datetime
 
 #Pour l'authentification
 def check_superuser(request):
@@ -750,6 +751,12 @@ def fichetech(request,idStage):
     }
     return render(request,'fichetech.html',context)
 
+def calculer_nombre_mois(date_debut, date_fin):
+    # Calculer la différence en mois
+    difference_en_mois = relativedelta(date_fin, date_debut).months
+
+    return difference_en_mois
+
 def attestation(request,idEtudiant):
     typevar = request.GET.get("type")
 
@@ -768,7 +775,11 @@ def attestation(request,idEtudiant):
     date_actuelle = date.today()
 
     #obtenir la durée du stage
-    dateD
+    date_debut = etudiant.stage.dateDebut
+    date_fin = etudiant.stage.dateFin
+
+    print(type(date_debut))
+    difference_en_mois = calculer_nombre_mois(date_debut, date_fin)
 
     # Vérifiez si l'utilisateur est connecté et est un superutilisateur
     is_superuser = check_superuser(request)
@@ -779,6 +790,7 @@ def attestation(request,idEtudiant):
         'dest1' : dest1,
         'dest2' : dest2,
         'date_actuelle' : date_actuelle,
+        'mois' : difference_en_mois,
         'type': typevar,
     }
     return render(request,'attestation.html',context)

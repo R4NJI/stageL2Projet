@@ -57,7 +57,7 @@
                     lineHeightFactor:2,
                 }
                 
-                const text = "\t\tLe Directeur des " +  "{{ dest2|safe }}"  + " du Ministère de l’Intérieur et de la Décentralisation, soussigné, atteste par la présente que " + "{{ etudiant.nomEtudiant }} {{ etudiant.prenomEtudiant }}" + " a effectué un stage de ... mois, du " + "{{ etudiant.stage.dateDebut }}" + " au " + "{{ etudiant.stage.dateFin }}" + ", auprès de notre département, en vue de l’obtention du diplôme de ... \n\t\tEn foi de quoi, la présente attestation lui est délivrée pour servir et valoir ce que de droit.";
+                const text = "\t\tLe Directeur des " +  "{{ dest2|safe }}"  + " du Ministère de l’Intérieur et de la Décentralisation, soussigné, atteste par la présente que " + "{{ etudiant.nomEtudiant }} {{ etudiant.prenomEtudiant }}" + " a effectué un stage de " + "{{ mois }}" + " mois, du " + "{{ etudiant.stage.dateDebut }}" + " au " + "{{ etudiant.stage.dateFin }}" + ", auprès de notre département, en vue de l’obtention du diplôme de ... \n\t\tEn foi de quoi, la présente attestation lui est délivrée pour servir et valoir ce que de droit.";
 
                 const maxWidth = 115; // Largeur maximale de la ligne
                 const lines = pdf.splitTextToSize(text, maxWidth);
