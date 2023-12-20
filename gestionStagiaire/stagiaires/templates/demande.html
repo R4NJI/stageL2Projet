@@ -115,7 +115,9 @@
                         {% if type == 'Accepté' %}
                         <td><a class="link" data-url="{% url 'fichetech' x.etudiant.stage.idStage %}"><img src="{% static 'images/icondownload.png' %}"></a></td>
                         {% endif %}
+                        {% if type == 'Terminé' %}
                         <td><a class="link" data-url="{% url 'attestation' x.etudiant.idEtudiant %}"><img src="{% static 'images/icondownload.png' %}"></a></td>
+                        {% endif %}
                         <td>{{ x.etudiant.stage.statut }}</td>
                         {% if is_superuser %}
                             {% if type == 'En attente' %}
